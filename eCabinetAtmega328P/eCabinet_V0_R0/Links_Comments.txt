@@ -1,0 +1,87 @@
+/*
+ * Links_Comments.c
+ *
+ * Created: 13/09/2015 10:11:31
+ *  Author: Fran
+ */ 
+  /***** The purpose of this file is take links, expreriences to develop it****/
+  
+ /****************** LINKS *****************************
+  This link assign our stream to standard I/O streams throuht USART0
+  http://www.embedds.com/programming-avr-i2c-interface/
+
+  This link has the I2C Master  library
+  https://github.com/g4lvanix/I2C-master-lib
+
+
+  This link has code about how to drive OLED128x64 ssd1306 throught I2C
+  https://github.com/thaletterb/ssd1306_avr8
+  
+  
+  This example shows how the I2C library i2cmaster.S can be used to
+  access a serial eeprom and show "Hello World on display OLED 128*x64
+
+  http://elegantcircuits.com/2014/08/15/ssd1306-to-atmega328p-using-i2c-protocol/
+  
+  This link show difference betwen data_byte and data_command
+  
+  http://www.ccsinfo.com/forum/viewtopic.php?t=52836
+  
+  This link about set & get Time
+  https://www.ccsinfo.com/forum/viewtopic.php?t=50256
+
+  **********************************************************************/
+
+Link Comment: https://github.com/Hotboards/CodeBank8/wiki/Manipulacion-de-variables-a-nivel-de-bits
+ 
+ /******* Programation comments *****
+ Ahora que tal si solo queremos modificar solo algunos bits (ponerlos en ceros o unos)
+
+unsigned char var1;
+var1 = 0b11001000;        /*este es el valor inicial de la variable
+                          a continuación modificaremos los 4 primeros bits,
+                          de un valor de 1000 a un valor de 0111, dejando el
+                          resto de los bits intactos*/
+
+var1 = var1 & 0b11110000; /*colocamos en cero los cuatro primeros bits
+                          el nuevo valor de var1 es 0b11000000*/
+
+var1 = var1 | 0b00000111; /*cargamos el nuevo valor en los 4 primeros bits
+                          el valor final de var1 es 0b11000111*/
+En el anterior ejemplo modificamos el valor de solo los primeros 4 bits de una variable, primero se realizo una operación AND ( & con los valores en 1 de aquellos bits que no queremos modificar ) y después se escribió el nuevo valor mediante una operación OR ( | con valores en 0 de aquellos bits que no queremos modificar ).
+
+Manejo de bits unitarios
+
+Y que tal si solo queremos manipular de un bit por vez, entonces se vuelve a un mas sencillo
+
+Colocando un bit a cero con una AND, (operación CLEAR)
+
+unsgined char var1 = 0xf0;  /*su valor en binario es 0b11110000*/
+var1 &= ~(1<<4);            /*colocamos el bit 4 en cero, var1 = 0b11100000*/
+var1 = var1 & 0b11101111;   /*esta seria la misma operación que la anterior*/
+Colocando un bit en uno con una OR, (operación SET)
+
+unsigned char var1 = 0x0f;  /*su valor en binario es 0b00001111*/
+var1 |= (1<<4);             /*colocamos el bit 4 en uno, var1 = 0b00011111*/
+var1 = var1 | 0b00010000;   /*esta seria la misma operación que la anterior*/
+
+Invertimos el estado de un bit con una XOR, (operación TOGGLE)
+
+unsigned char var1 = 0x01;
+var1 ^= (1<<4);
+var1 = var1 ^ 0b00010000;
+Lectura de bits
+
+Los bits solo pueden tener dos valores 1 o 0, así que podemos leer esos valores mediante un if y una simple mascara AND.
+
+unsigned char var1 = 0x02;   /*su valor en binario es 0b00000010*/
+if(var1 & (1<<2))  /*la expresión se desglosa como if(var1 & 0b00000010)*/
+{
+    /*si el bit 2 esta en uno la sentencia se cumplirá*/
+}
+else
+{
+    /*si esta en cero se ejecuta esta otra sentencia*/
+}
+  
+  
