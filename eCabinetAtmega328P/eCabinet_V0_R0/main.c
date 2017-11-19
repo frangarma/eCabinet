@@ -17,6 +17,7 @@ unsigned char count_timer =0;
 
 char mensaje[20];
 char message_received [20];
+int *p;
 
 unsigned char DataBank0GPIOExpander_1 = 0x00;
 unsigned char DataBank1GPIOExpander_1 = 0x00;
@@ -72,7 +73,7 @@ int main(void)
 {
 	enum bool {false, true};
 	enum bool myFlag=false;
-	int *p;
+	
 	initial_configuration();//Pin manager; USART_init; I2C_init
 	lcd_init();// Set of configuration commands
 	test_1();// Display picture during 2 seconds
