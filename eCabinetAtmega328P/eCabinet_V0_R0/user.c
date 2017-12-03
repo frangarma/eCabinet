@@ -18,7 +18,7 @@ void test_1 (void)
 {
 	sendCommand(0XA7);//Invert display
 	drawBuffer(buffer);//For 1024 With command send_Data(data)
-	_delay_ms(1000);
+	_delay_ms(500);
 	clearBuffer(buffer);
 	sendCommand(SSD1306_NORMALDISPLAY);//Invert display
 	
@@ -27,7 +27,7 @@ void test_1 (void)
 
 void test_2 (void)
 {
-	USART_Transmit_data("Hello my friend \n");	
+	USART_Transmit_data("Hello my friend\r");	
 }
 
 void test_3 (unsigned char n, unsigned char j)

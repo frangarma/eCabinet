@@ -192,3 +192,36 @@ void i2c_stop(void)
 }/* i2c_stop */
 
 
+uint8_t i2c_readReg(uint8_t devaddr, uint8_t regaddr, uint8_t* data, uint16_t length)
+{
+	if (i2c_start(devaddr<<1)) return 1;
+
+ 	i2c_write(regaddr);
+	
+
+	if (i2c_start( (devaddr<<1) |0x01)) return 1;
+
+	for (uint16_t i = 0; i < (length-1); i++)
+	{
+		data[i] = i2c_readAck();
+	}
+	data[(length-1)] = i2c_readNak();
+
+	i2c_stop();
+
+	return 0;
+}
+
+/* 
+void eCabinet_getADC_1(uint8_t address, uint8_t channel)
+{
+	
+	i2c_start(address|0x00);
+	i2c_write(0x84);// Command: single ended, channel 0, internal reference off and A/D converter ON
+	i2c_rep_start(address|0x01);// Repeat start condition
+	array_aux[0]=i2c_readAck();
+	array_aux[1]=i2c_readNak();
+	i2c_stop();
+	
+}
+*/

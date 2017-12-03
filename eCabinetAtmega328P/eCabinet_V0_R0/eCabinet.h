@@ -47,32 +47,32 @@
 #define IOConf_Bank3_Exp3		0x4A
 #define IOConf_Bank4_Exp3		0x6D
 
-#define PSU_1_1SWITCHON			0X10
-#define PSU_1_2SWITCHON			0X40
-#define PSU_1_3SWITCHON			0X01
-#define PSU_1_4SWITCHON			0X04
-#define PSU_1_5SWITCHON			0X10
-#define PSU_1_5SOFT_SWITCH		0X20
+#define PSU_1_1SWITCH			~0X10
+#define PSU_1_2SWITCH			~0X40
+#define PSU_1_3SWITCH			~0X01
+#define PSU_1_4SWITCH			~0X04
+#define PSU_1_5SWITCH			~0X10
+#define PSU_1_5SOFT_SWITCH		~0X20
 
 
 
-#define PSU_2_1SWITCHON			~ 0x10 // Señales activas a 0
-#define PSU_2_2SWITCHON			~ 0x40 // Señales activas a 0
+#define PSU_2_1SWITCH			~0x10 // Señales activas a 0
+#define PSU_2_2SWITCH			~0x40 // Señales activas a 0
 
-#define PSU_3_1SWITCHON			0X02
-#define PSU_3_2SWITCHON			0X08
-#define PSU_3_3SWITCHON			0X20
-#define PSU_3_4SWITCHON			0X80
-#define PSU_3_5SWITCHON			0X02
+#define PSU_3_1SWITCH			~0X02
+#define PSU_3_2SWITCH			~0X08
+#define PSU_3_3SWITCH			~0X20
+#define PSU_3_4SWITCH			~0X80
+#define PSU_3_5SWITCH			~0X02
 
-#define PSU_4_2SWITCHON			0X04
+#define PSU_4_2SWITCH			~0X04
 
-#define PSU_5_1SWITCHON			0X80
-#define PSU_5_2SWITCHON			0X02
+#define PSU_5_1SWITCH			~0X80
+#define PSU_5_2SWITCH			~0X02
 
-#define PSU_6_2SWITCHON			0X10
+#define PSU_6_2SWITCH			~0X10
 
-#define PSU_7_2SWITCHON			0X80
+#define PSU_7_2SWITCH			~0X80
 
 
 #define WDT_IN_CONF				0b00010000	//
@@ -81,10 +81,25 @@
 #define LED0					~ 0x40			
 #define LED1					~ 0x80
 
+/****** MASKS TO ENCODE PSU SIGNAL  *****/
+
+#define MASK_GPIO_EXPAND_2_BANK0 0xF8
+
+/***** MUX SELECT CORRESPONDING SIGNAL *****/
+
+#define PSU2_CURRENT			(0X00 | MASK_GPIO_EXPAND_2_BANK0)
+#define PSU2_VOLTAGE			(0X01 | MASK_GPIO_EXPAND_2_BANK0)
+#define PSU2_GND_SENSE_VOLTAGE	0X02
+#define PSU2_1_IFB				0x03
+#define PSU2_2_IFB				0x04
+
 
 void eCabinetsendCommand_GPIOExpander(uint8_t address, uint8_t register_definition, uint8_t IO);
 int * eCabinet_getADC(uint8_t address, uint8_t channel);
-
+void eCabinet_getADC_1(uint8_t address, uint8_t channel);
+void PSU_Switch (uint8_t PSU_X, uint8_t Out_Y_PSU_X, uint8_t Switch, uint8_t array_aux[][5] );
+void WDT_signal(void);
+void led_activity(void);
 
 
 #endif /* ECABINET_H_ */

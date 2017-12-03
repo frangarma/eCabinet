@@ -59,17 +59,29 @@
 #include "main.h"
 
 
-extern uint8_t buffer [1024];//define into SSD1306
-extern unsigned char h,m,s;//define into user.c
-extern unsigned char new_minute;
-extern unsigned char new_state_application_0;
+extern unsigned char buffer [1024];//define into SSD1306
 extern char mensaje[20];
-extern unsigned char actual_time [6];//s,m,h,d,D,y
-extern unsigned char initial_program_time[6];//s,m,h,d,D,y
-extern unsigned char end_program_time[6];//s,m,h,d,D,y
-extern unsigned char program;// 1 if there any program existent
-extern unsigned char k;// Used to get the state of active_program() extern
-extern unsigned char init;//extern
+extern uint8_t array_aux[2];//define into main.c
+
+extern unsigned char DataBank0GPIOExpander_1;
+extern unsigned char DataBank1GPIOExpander_1;
+extern unsigned char DataBank2GPIOExpander_1;
+extern unsigned char DataBank3GPIOExpander_1;
+extern unsigned char DataBank4GPIOExpander_1;
+
+extern unsigned char DataBank0GPIOExpander_2;
+extern unsigned char DataBank1GPIOExpander_2;
+extern unsigned char DataBank2GPIOExpander_2;
+extern unsigned char DataBank3GPIOExpander_2;
+extern unsigned char DataBank4GPIOExpander_2;
+
+extern unsigned char DataBank0GPIOExpander_3;
+extern unsigned char DataBank1GPIOExpander_3;
+extern unsigned char DataBank2GPIOExpander_3;
+extern unsigned char DataBank3GPIOExpander_3;
+extern unsigned char DataBank4GPIOExpander_3;
+
+//extern unsigned char DataGPIOExpander_xBank_y [3][5];//defined into eCabinet.c
 
 
 #endif /* INCLUDES_H_ */

@@ -14,10 +14,25 @@
 
 unsigned char new_event_timer=0;
 unsigned char count_timer =0;
+uint8_t error=0;
 
 char mensaje[20];
 char message_received [20];
+uint8_t array_aux[2];
 int *p;
+uint16_t aux=0;
+
+uint8_t DataGPIOExpander_xBank_y [3][5]=
+{
+	{0x00, 0x00, 0x00, 0x00, 0x00},//GPIOExpander1_Bank0-4
+	{0x00, 0x00, 0x00, 0x00, 0x00},//GPIOExpander2_Bank0-4
+	{0x00, 0x00, 0x00, 0x00, 0x00} //GPIOExpander3_Bank0-4
+
+};
+
+//TODO, parece que la matriz no guarda valores como si fuese una variable global, al modificarlos con los encendidos de las PSU2_1 PSU_2_2 como las operaciones son & no retiene el valor anterior (0 anterior) y por tanto
+// no mantiene varios valores activos
+
 
 unsigned char DataBank0GPIOExpander_1 = 0x00;
 unsigned char DataBank1GPIOExpander_1 = 0x00;
@@ -76,78 +91,168 @@ int main(void)
 	
 	initial_configuration();//Pin manager; USART_init; I2C_init
 	lcd_init();// Set of configuration commands
-	test_1();// Display picture during 2 seconds
+	test_1();// Display picture during 0.5 seconds
 	test_2();// Send through USART "Hello my friend"
-	test_3(10,1);//Send to lcd "Running: "
-	sprintf(mensaje, "%i", count_timer);	
-	lcd_draw_string(50,1, mensaje, buffer);//Charge buffer with string
-	drawBuffer(buffer);
 	
 	sei();//Set enable interrupt	
 	TIMER1_enable();
 	_delay_ms(1);
 	/******* GPIO Expanders configuration******/
-	eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, IORegisterBank0Address, IOConf_Bank0_Exp1);//Configure IO pins of Bank0 GPIOExpander_1
-	eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, IORegisterBank1Address, IOConf_Bank1_Exp1);//Configure IO pins of Bank1 GPIOExpander_1
-	eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, IORegisterBank2Address, IOConf_Bank2_Exp1);//Configure IO pins of Bank2 GPIOExpander_1
+	IOBank_Expander_Configuration();
 	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, IORegisterBank0Address, IOConf_Bank0_Exp2);//Configure IO pins of Bank0 GPIOExpander_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, IORegisterBank1Address, IOConf_Bank1_Exp2);//Configure IO pins of Bank1 GPIOExpander_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, IORegisterBank2Address, IOConf_Bank2_Exp2);//Configure IO pins of Bank0 GPIOExpander_2
+	//TODO	
+	/***** Code to test all the elements in the circuit *****/
+	//This code aims to test all the interns elements in the circuit and have to report the communications' results, specifying the fail element if was the case.
+	/*
+	/*
+	/*
+	/*
+	/*
 	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, IORegisterBank0Address, IOConf_Bank0_Exp3);//Configure IO pins of Bank0 GPIOExpander_3
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, IORegisterBank1Address, IOConf_Bank1_Exp3);//Configure IO pins of Bank1 GPIOExpander_3
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, IORegisterBank2Address, IOConf_Bank2_Exp3);//Configure IO pins of Bank0 GPIOExpander_3
-
-	sprintf(mensaje, "B0_Exp2:%x", DataBank0GPIOExpander_2);
-	lcd_draw_string(10,2, mensaje, buffer);//Charge buffer with string
-	drawBuffer(buffer);
-	_delay_ms(500);
+	
+	//TODO
+	/***** Code that let us to manage the test throug a menu with different option and the managment is by means of 1 button *****/	
+	/* Communication tests
+	/* Reset all
+	/* Switch on PSU
+	/* Parameter reads
+	
 	
 	/****** RESET outputs or defaults values *****/
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 |= 0xFF );//Switch off both PSU2 outputs.
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank2, DataBank2GPIOExpander_3 |= 0xFF );//Switch off both PSU1 outputs PSU1_1 & PSU1_2
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 |= 0xFF );//Switch off both PSU1 outputs PSU1_3 & PSU1_4 & PSU_1_5 & PSU1_5_SOFT & PSU_5_1
+	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 |= 0xFF );//Switch off both PSU2 outputs PSU2_1 & PSU2_2
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank0, DataBank0GPIOExpander_3 |= 0xFF );//Switch off both PSU3 outputs PSU3_1 & PSU3_2 & PSU3_3 & PSU3_4
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank1, DataBank1GPIOExpander_3 |= 0xFF );//Switch off both PSU3 outputs PSU3_5
+	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank1, DataBank1GPIOExpander_2 |= 0xFF );//Switch off both PSU4 outputs PSU4_2
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 |= 0xFF );//Switch off both PSU5&PSU6&PSU7 outpus PSU5_2 & PSU_6_2 & PSU_7_2
+	
 	eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, OutputPortRegisterBank0, DataBank0GPIOExpander_1 |= 0xFF );//Switch off both Leds 1&2.
+	_delay_ms(500);
+		//TODO Put here the same series for the rest of combination and merge all inside a function
+	
+	/*****Configure output registers to turn on all PSU*****/
+	
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank2, DataBank2GPIOExpander_3 &= (PSU_1_1SWITCH & PSU_1_2SWITCH));//Switch on both output PSU1_1 & PSU1_2
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_1_3SWITCH & PSU_1_4SWITCH));//Switch on both output PSU1_3 & PSU1_4
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_1_5SWITCH));//Switch on both output PSU1_5	
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_1_5SOFT_SWITCH));//Switch on both output PSU1_5_SOFT
+	
+ 	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 &= (PSU_2_2SWITCH & PSU_2_1SWITCH));//Switch on both output PSU2_1 & PSU2_2
+	 
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank0, DataBank0GPIOExpander_3 &= (PSU_3_1SWITCH & PSU_3_2SWITCH & PSU_3_3SWITCH & PSU_3_4SWITCH));//Switch on both output PSU3_1 & PSU3_3 & PSU3_2 & PSU3_4
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank1, DataBank1GPIOExpander_3 &= (PSU_3_5SWITCH));//Switch on both output PSU3_5
+	
+	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank1, DataBank1GPIOExpander_2 &= (PSU_4_2SWITCH));//Switch on both output PSU4_2
+	
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_5_1SWITCH));//Switch on both output PSU5_1
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 &= (PSU_5_2SWITCH));//Switch on both output PSU5_2
+	
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 &= (PSU_6_2SWITCH));//Switch on both output PSU6_2
+	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 &= (PSU_7_2SWITCH));//Switch on both output PSU7_2
 	
 	
-	_delay_ms(200);
 	
-	/*****Configure output registers *****/
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 &= (PSU_2_2SWITCHON & PSU_2_1SWITCHON));//Switch on both PSU
- 	_delay_ms(200);
- 	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 |= (~ PSU_2_2SWITCHON | ~ PSU_2_1SWITCHON) );//Switch off this PSU
-	_delay_ms(200);
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 &= (PSU_2_2SWITCHON & PSU_2_1SWITCHON));//Switch on both PSU
+	
 	
 	/***** Create here the configuration to put on MUX1 the signal to read from ADC*****/
-	// Put the code here
+	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 &=PSU2_VOLTAGE);//This command charge the corresponding value to select PSU2_VOLTAGE signal into channel 0 of ADC IC. 
+	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 &= PSU2_CURRENT);//This command charge the corresponding value to select PSU2_CURRENT signal into channel 0 of ADC IC. 
+	
+// 	PSU_Switch(2,1,1,DataGPIOExpander_xBank_y);
+// 	_delay_ms(500);
+// 	PSU_Switch(2,2,1,DataGPIOExpander_xBank_y);
 	
 	
+	
+	
+	//PSU_Switch(2,2,1);
+	/******* Headlines *****/
+	
+	lcd_draw_string(10,1, "Running: ", buffer);//Charge buffer with string
+	sprintf(mensaje, "B0_Exp2:%x", DataBank0GPIOExpander_2);
+	lcd_draw_string(10,2, mensaje, buffer);//Charge buffer with string	
+	lcd_draw_string(10,3, "Voltage:", buffer);//Charge buffer with string	
+	lcd_draw_string(10,4, "Current:", buffer);//Charge buffer with string
+	lcd_draw_string(10,5, "Current:", buffer);//Charge buffer with string
+	lcd_draw_string(10,6, "Current:", buffer);//Charge buffer with string
+	lcd_draw_string(10,7, "Error:", buffer);//Charge buffer with string	
+	drawBuffer(buffer);
 	
     while(1)
 	{		
 		
 		if (new_event_timer)//Currently wait 100 seconds until begin to resets each 2 seconds,but is a new data is write in output register it doesn' wait the 100 seconds only 2
 		{
-			/*Generate a short pulse in WDT_In signal to avoid a WDT time_out*/
-			eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, OutputPortRegisterBank2, WDT_IN_CONF| WDT_IN);
-			eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, OutputPortRegisterBank2, WDT_IN_CONF);
-			
-			/****** Activity led0 & Led 1 *****/
- 			eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, OutputPortRegisterBank0, DataBank0GPIOExpander_1 &= LED0);//Configure IO pins of Bank2 GPIOExpander_1
-			_delay_ms(100);
-			eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, OutputPortRegisterBank0, DataBank0GPIOExpander_1 |= ~LED0);//Configure IO pins of Bank2 GPIOExpander_1
-			
 			new_event_timer=0;
-			
-			p=eCabinet_getADC(ADCAddress,0);// Currently Channel is not a parameter
-			sprintf(mensaje, "%d", *p);
+			sprintf(mensaje, "%d",count_timer);
 			lcd_draw_string(50,1, mensaje, buffer);//Charge buffer with string
-			drawBuffer(buffer);			
+			
+			WDT_signal();			
+			led_activity();
+ 			
+			
+				
+			//eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, (DataBank0GPIOExpander_2 &= PSU2_VOLTAGE));//This command charge the corresponding value to select PSU2_VOLTAGE signal into channel 0 of ADC IC. 
+			eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, 0xA9);//This command charge the corresponding value to select PSU2_VOLTAGE signal into channel 0 of ADC IC. 
+			error=i2c_readReg(ADCAddress, 0x84, array_aux, 2);//
+			aux=array_aux[0]<<8;
+			aux|= array_aux[1];
+			aux/=38.5024;// Voltage 38.5024
+			sprintf(mensaje, "%d", aux);
+			lcd_draw_string(50,3, mensaje, buffer);//Charge buffer with string			 
+			aux=0;
+			
+			//eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, (DataBank0GPIOExpander_2 &= PSU2_CURRENT));//This command charge the corresponding value to select PSU2_CURRENT signal into channel 0 of ADC IC. 
+			eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, 0xA8);//This command charge the corresponding value to select PSU2_CURRENT signal into channel 0 of ADC IC. 
+			error=i2c_readReg(ADCAddress, 0x84, array_aux, 2);
+			aux=array_aux[0]<<8;
+			aux|= array_aux[1];
+			//aux/54;// Current=(Valor leído -2048)/54.0672
+			sprintf(mensaje, "%d", aux);
+			lcd_draw_string(50,4, mensaje, buffer);//Charge buffer with string
+			aux=0;
+			
+			//eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, (DataBank0GPIOExpander_2 &= PSU2_CURRENT));//This command charge the corresponding value to select PSU2_CURRENT signal into channel 0 of ADC IC.
+			eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, 0xAB);//This command charge the corresponding value to select PSU2_1_CURRENT signal into channel 0 of ADC IC.
+			error=i2c_readReg(ADCAddress, 0x84, array_aux, 2);
+			aux=array_aux[0]<<8;
+			aux|= array_aux[1];
+			//aux/=(82);// Current=(Valor leído/820)*10
+			sprintf(mensaje, "%d", aux);
+			lcd_draw_string(50,5, mensaje, buffer);//Charge buffer with string
+			aux=0;
+			
+			//eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, (DataBank0GPIOExpander_2 &= PSU2_CURRENT));//This command charge the corresponding value to select PSU2_CURRENT signal into channel 0 of ADC IC.
+			eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, 0xAC);//This command charge the corresponding value to select PSU2_2_CURRENT signal into channel 0 of ADC IC.
+			error=i2c_readReg(ADCAddress, 0x84, array_aux, 2);
+			aux=array_aux[0]<<8;
+			aux|= array_aux[1];
+			//aux/=(82);// Current=(Valor leído/820)*10
+			sprintf(mensaje, "%d", aux);
+			lcd_draw_string(50,6, mensaje, buffer);//Charge buffer with string
+			aux=0;
+			
+		
+			if (error)
+			{
+				 sprintf(mensaje, "%d",error);
+				 lcd_draw_string(50,7, mensaje, buffer);//Charge buffer with string
+			 }
+			else
+			{ 
+				sprintf(mensaje, "%d",error);
+				lcd_draw_string(50,7, mensaje, buffer);
+			}
+			
+			drawBuffer(buffer);		
+			
 			if (count_timer==255)
 			{ count_timer=0;}
 				
 			
 		}// end if (new_event_timer)
+		
 		
 		NOP();
 			
