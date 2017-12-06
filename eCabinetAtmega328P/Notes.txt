@@ -1,3 +1,1 @@
-This project has been created from the especified link template below
-
-C:\Users\garciafr\Documents\Visual Studio 2015\My Exported Templates\Template_V0_R0.zip
+Working brunch is the where currently I'm working and from I'll upload in master.
