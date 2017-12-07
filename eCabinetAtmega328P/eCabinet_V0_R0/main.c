@@ -119,37 +119,13 @@ int main(void)
 	
 	
 	/****** RESET outputs or defaults values *****/
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank2, DataBank2GPIOExpander_3 |= 0xFF );//Switch off both PSU1 outputs PSU1_1 & PSU1_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 |= 0xFF );//Switch off both PSU1 outputs PSU1_3 & PSU1_4 & PSU_1_5 & PSU1_5_SOFT & PSU_5_1
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 |= 0xFF );//Switch off both PSU2 outputs PSU2_1 & PSU2_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank0, DataBank0GPIOExpander_3 |= 0xFF );//Switch off both PSU3 outputs PSU3_1 & PSU3_2 & PSU3_3 & PSU3_4
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank1, DataBank1GPIOExpander_3 |= 0xFF );//Switch off both PSU3 outputs PSU3_5
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank1, DataBank1GPIOExpander_2 |= 0xFF );//Switch off both PSU4 outputs PSU4_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 |= 0xFF );//Switch off both PSU5&PSU6&PSU7 outpus PSU5_2 & PSU_6_2 & PSU_7_2
-	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander1Address, OutputPortRegisterBank0, DataBank0GPIOExpander_1 |= 0xFF );//Switch off both Leds 1&2.
+	IO_Bank_Expander_reset_outputs();
 	_delay_ms(500);
 		//TODO Put here the same series for the rest of combination and merge all inside a function
 	
-	/*****Configure output registers to turn on all PSU*****/
+	/*****Configure output registers to turn on all PSU*****/	
+	SwitchOnAllPSU();
 	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank2, DataBank2GPIOExpander_3 &= (PSU_1_1SWITCH & PSU_1_2SWITCH));//Switch on both output PSU1_1 & PSU1_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_1_3SWITCH & PSU_1_4SWITCH));//Switch on both output PSU1_3 & PSU1_4
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_1_5SWITCH));//Switch on both output PSU1_5	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_1_5SOFT_SWITCH));//Switch on both output PSU1_5_SOFT
-	
- 	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank0, DataBank0GPIOExpander_2 &= (PSU_2_2SWITCH & PSU_2_1SWITCH));//Switch on both output PSU2_1 & PSU2_2
-	 
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank0, DataBank0GPIOExpander_3 &= (PSU_3_1SWITCH & PSU_3_2SWITCH & PSU_3_3SWITCH & PSU_3_4SWITCH));//Switch on both output PSU3_1 & PSU3_3 & PSU3_2 & PSU3_4
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank1, DataBank1GPIOExpander_3 &= (PSU_3_5SWITCH));//Switch on both output PSU3_5
-	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander2Address, OutputPortRegisterBank1, DataBank1GPIOExpander_2 &= (PSU_4_2SWITCH));//Switch on both output PSU4_2
-	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank3, DataBank3GPIOExpander_3 &= (PSU_5_1SWITCH));//Switch on both output PSU5_1
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 &= (PSU_5_2SWITCH));//Switch on both output PSU5_2
-	
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 &= (PSU_6_2SWITCH));//Switch on both output PSU6_2
-	eCabinetsendCommand_GPIOExpander(GPIOExpander3Address, OutputPortRegisterBank4, DataBank4GPIOExpander_3 &= (PSU_7_2SWITCH));//Switch on both output PSU7_2
 	
 	
 	

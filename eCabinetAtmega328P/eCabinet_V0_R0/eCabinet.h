@@ -95,6 +95,8 @@
 
 
 void eCabinetsendCommand_GPIOExpander(uint8_t address, uint8_t register_definition, uint8_t IO);
+void IO_Bank_Expander_reset_outputs(void);
+void SwitchOnAllPSU(void);
 int * eCabinet_getADC(uint8_t address, uint8_t channel);
 void eCabinet_getADC_1(uint8_t address, uint8_t channel);
 void PSU_Switch (uint8_t PSU_X, uint8_t Out_Y_PSU_X, uint8_t Switch, uint8_t array_aux[][5] );
